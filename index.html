@@ -81,6 +81,7 @@
             `);
             $("#content-type").val("application/json");
         });
+        var token = null;
         $("#submit").click(function () {
             var protocal = $("#protocal").val();
             var host = $("#host").val();
@@ -88,6 +89,8 @@
             var path = $("#path").val();
             var data = $("#data").val();
             var contentType = $("#content-type").val();
+            if (token != null)
+                token = "Bearer " + token;
             $.ajax({
                 url: "http://127.0.0.1:3000/relay",
                 type: "POST",
@@ -103,11 +106,13 @@
                     path: path,
                     method: "POST",
                     contentType: contentType,
+                    // Authorization: token,
                     data: data
                 },
                 success: function (response) {
                     console.log("successfully");
                     console.log(response);
+                    token = response.access_token;
                     $("#response").val(JSON.stringify(response));
                 }
             }).fail(function (result) {
