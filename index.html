@@ -1,0 +1,125 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>转发测试</title>
+    <script src="./node_modules/jquery/dist/jquery.min.js"></script>
+</head>
+<div>
+    <div>
+        <label for="">Protocal</label>
+        <select style="width:80%;" name="" id="protocal">
+            <option value="http">http</option>
+            <option value="https">https</option>
+        </select>
+    </div>
+    <div>
+        <label for="">Host</label>
+        <input style="width:80%;" type="text" name="" id="host" value="182.92.232.233">
+    </div>
+    <div>
+        <label for="">Port</label>
+        <input style="width:80%;" type="text" name="" id="port" value="8884">
+    </div>
+    <div>
+        <label for="">Path</label>
+        <input style="width:80%;" type="text" name="" id="path" value="/Token">
+    </div>
+    <div>
+        <p>
+            <label for="">Request Data</label>
+        </p>
+        <textarea style="width:100%;" name="" id="data" cols="30" rows="10"></textarea>
+    </div>
+    <div>
+        <label for="">Content-Type</label>
+        <input type="text" name="" id="content-type" value="application/json">
+    </div>
+    <hr>
+    <div>
+        <button id="setLoginInfo">设置登陆信息</button>
+        <button id="setGetSalesOrderInfo">设置获取订单数据信息</button>
+        <button id="submit">submit</button>
+    </div>
+    <hr>
+    <div>
+        <textarea style="width:100%;" name="" id="response" cols="30" rows="10"></textarea>
+    </div>
+</div>
+
+<script>
+    $(document).ready(function () {
+        $("#setLoginInfo").click(function () {
+            $("#protocal").val("http");
+            $("#host").val("182.92.232.233");
+            $("#port").val("8884");
+            $("#path").val("/Token");
+            $("#data").val(`grant_type=password&username=manager&password=56b0fbc82e5050909a1fbd10de711dbd`);
+            $("#content-type").val("application/json");
+        });
+        $("#setGetSalesOrderInfo").click(function () {
+            $("#protocal").val("http");
+            $("#host").val("182.92.232.233");
+            $("#port").val("8884");
+            $("#path").val("/api/SalesOrder/GetSalesOrders");
+            $("#data").val(`
+                {
+                    "type": "Search",
+                    "Parameter": {
+                        "Conditions": [
+                            {
+                                "FieldName": "DocEntry",
+                                "Operation": "EQUAL",
+                                "ConditionValue": 8
+                            }
+                        ]
+                    }
+                }
+            `);
+            $("#content-type").val("application/json");
+        });
+        $("#submit").click(function () {
+            var protocal = $("#protocal").val();
+            var host = $("#host").val();
+            var port = $("#port").val();
+            var path = $("#path").val();
+            var data = $("#data").val();
+            var contentType = $("#content-type").val();
+            $.ajax({
+                url: "http://127.0.0.1:3000/relay",
+                type: "POST",
+                // dataType: "JSON",
+                // contentType: "application/json",
+                xhrFields: {
+                    withCredentials: true
+                },
+                data: {
+                    protocal: protocal,
+                    host: host,
+                    port: port,
+                    path: path,
+                    method: "POST",
+                    contentType: contentType,
+                    data: data
+                },
+                success: function (response) {
+                    console.log("successfully");
+                    console.log(response);
+                    $("#response").val(JSON.stringify(response));
+                }
+            }).fail(function (result) {
+                console.log("fail");
+                console.log(result);
+            });
+        });
+
+
+    });
+
+</script>
+</body>
+
+</html>
