@@ -4,12 +4,16 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "webpack-dev-server --env developmennt",
+    "build": "webpack --env production"
   },
   "author": "Vincent",
   "license": "ISC",
   "dependencies": {
     "jquery": "^3.2.1",
-    "live-server": "^1.2.0"
+    "live-server": "^1.2.0",
+    "webpack": "^3.10.0",
+    "webpack-dev-server": "^2.11.1"
   }
 }

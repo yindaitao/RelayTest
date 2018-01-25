@@ -38,58 +38,40 @@
                     data: JSON.stringify({
                         url: url
                     })
-                }).fail(function (response) {
-                    var weiBodata = {};
+                }).done(function (response) {
+                    console.log(response);
+                    if (response.ok == 1) {
+                        var weiBodata = {};
+                        //创建时间
+                        weiBodata.created = response.data.created_at;
+                        //博主id
+                        weiBodata.userId = response.data.user.id;
+                        //博主名称
+                        weiBodata.userName = response.data.user.screen_name;
+                        //博主粉丝
+                        weiBodata.userFollowers = response.data.user.followers_count;
+                        //转发
+                        weiBodata.reposts = response.data.reposts_count;
+                        //评论
+                        weiBodata.comments = response.data.comments_count;
+                        //赞
+                        weiBodata.attitudes = response.data.attitudes_count;
+                        //微博标题
+                        weiBodata.title = response.data.status_title;
+                        //发布的内容
+                        weiBodata.Text = response.data.text;
 
-                    var el = $('<div></div>');
-                    el.html(response.responseText);
-                    var scripts = $('script', el);
-                    for (var key in scripts) {
-
-                        if (scripts.hasOwnProperty(key)) {
-                            var element = scripts[key];
-                            if (/var config/.test(element.innerText)) {
-                                var jsonstring = element.innerText;
-                                // console.log(jsonstring);
-                                jsonstring = /\[{[\d\D]*}\]/.exec(jsonstring);
-                                // console.log(JSON.stringify(jsonstring));
-                                var json = JSON.parse(jsonstring);
-
-                                var weiboContent = json[0];
-                                console.log(JSON.stringify(weiboContent));
-                                //创建时间
-                                weiBodata.created = weiboContent.status.created_at;
-                                //博主id
-                                weiBodata.userId = weiboContent.status.user.id;
-                                //博主名称
-                                weiBodata.userName = weiboContent.status.user.screen_name;
-                                //博主粉丝
-                                weiBodata.userFollowers = weiboContent.status.user.followers_count;
-                                //转发
-                                weiBodata.reposts = weiboContent.status.reposts_count;
-                                //评论
-                                weiBodata.comments = weiboContent.status.comments_count;
-                                //赞
-                                weiBodata.attitudes = weiboContent.status.attitudes_count;
-                                //微博标题
-                                weiBodata.title = weiboContent.status.status_title;
-                                //发布的内容
-                                weiBodata.Text = weiboContent.status.text;
-
-                                //是否转发
-                                if (weiboContent.status.retweeted_status != null) {
-                                    weiBodata.isRelay = true;
-                                } else {
-                                    weiBodata.isRelay = false;
-                                }
-                                // retweeted_status
-
-                                // console.log(weiboText);
-                            }
+                        //是否转发
+                        if (response.data.retweeted_status != null) {
+                            weiBodata.isRelay = true;
+                        } else {
+                            weiBodata.isRelay = false;
                         }
+                        console.log(weiBodata);
+                        $("#response").val(JSON.stringify(weiBodata));
                     }
-                    $("#response").val(JSON.stringify(weiBodata));
-
+                }).fail(function (error) {
+                    $("#response").val(JSON.stringify(error));
                 });
             });
         });
