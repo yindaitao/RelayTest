@@ -101,17 +101,10 @@
             var path = $("#path").val();
             var data = $("#data").val();
             var contentType = $("#content-type").val();
-            if (token != null)
-                token = "Bearer " + token;
 
             $.ajax({
                 url: "http://127.0.0.1:3000/relay",
                 type: "POST",
-                // dataType: "JSON",
-                // contentType: "application/json",
-                xhrFields: {
-                    withCredentials: true
-                },
                 data: {
                     protocal: protocal,
                     host: host,
