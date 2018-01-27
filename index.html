@@ -52,6 +52,17 @@
 
 <script>
     $(document).ready(function () {
+
+        function getCookie(name) {
+            var arr, reg = new RegExp("(^| )" + name + "=([^;]*)(;|$)");
+
+            if (arr = document.cookie.match(reg))
+
+                return unescape(arr[2]);
+            else
+                return null;
+        }
+
         $("#setLoginInfo").click(function () {
             $("#protocal").val("http");
             $("#host").val("182.92.232.233");
@@ -82,6 +93,7 @@
             $("#content-type").val("application/json");
         });
         var token = null;
+        var cookie = null;
         $("#submit").click(function () {
             var protocal = $("#protocal").val();
             var host = $("#host").val();
@@ -91,6 +103,7 @@
             var contentType = $("#content-type").val();
             if (token != null)
                 token = "Bearer " + token;
+
             $.ajax({
                 url: "http://127.0.0.1:3000/relay",
                 type: "POST",
@@ -106,13 +119,14 @@
                     path: path,
                     method: "POST",
                     contentType: contentType,
-                    // Authorization: token,
+                    cookie: cookie,
                     data: data
                 },
-                success: function (response) {
+                success: function (response, textStatus, request) {
                     console.log("successfully");
                     console.log(response);
                     token = response.access_token;
+                    cookie = response.cookie;
                     $("#response").val(JSON.stringify(response));
                 }
             }).fail(function (result) {
