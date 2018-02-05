@@ -10,7 +10,14 @@
 </head>
 
 <body>
-
+    <div>
+        <label for="">weibo</label>
+        <select id="weibo">
+            <option value="content">内容</option>
+            <option value="owner">博主</option>
+        </select>
+        <input style="width:80%;" type="text" id="relayURL">
+    </div>
     <hr>
     <div>
         <label for="">微博URL</label>
@@ -26,12 +33,17 @@
     </div>
     <script>
         $(document).ready(function () {
-
+            $("#relayURL").val("http://127.0.0.1:3000/weibo/content");
+            $("#weibo").change(function () {
+                $("#relayURL").val("http://127.0.0.1:3000/weibo/" + $("#weibo").val());
+            });
             $("#getdata").click(function () {
+                var relayURL = $("#relayURL").val();
                 var url = $("#url").val();
-                $("#iframe").attr("src", url);
+                var type = $("#weibo").val();
+                // $("#iframe").attr("src", url);
                 $.ajax({
-                    url: "http://127.0.0.1:3000/weibo",
+                    url: relayURL,
                     type: "POST",
                     dataType: "JSON",
                     contentType: "application/json",
@@ -40,36 +52,38 @@
                     })
                 }).done(function (response) {
                     console.log(response);
-                    if (response.ok == 1) {
-                        var weiBodata = {};
-                        //创建时间
-                        weiBodata.created = response.data.created_at;
-                        //博主id
-                        weiBodata.userId = response.data.user.id;
-                        //博主名称
-                        weiBodata.userName = response.data.user.screen_name;
-                        //博主粉丝
-                        weiBodata.userFollowers = response.data.user.followers_count;
-                        //转发
-                        weiBodata.reposts = response.data.reposts_count;
-                        //评论
-                        weiBodata.comments = response.data.comments_count;
-                        //赞
-                        weiBodata.attitudes = response.data.attitudes_count;
-                        //微博标题
-                        weiBodata.title = response.data.status_title;
-                        //发布的内容
-                        weiBodata.Text = response.data.text;
+                    if (type === "content") {
+                        if (response.ok == 1) {
+                            var weiBodata = {};
+                            //创建时间
+                            weiBodata.created = response.data.created_at;
+                            //博主id
+                            weiBodata.userId = response.data.user.id;
+                            //博主名称
+                            weiBodata.userName = response.data.user.screen_name;
+                            //博主粉丝
+                            weiBodata.userFollowers = response.data.user.followers_count;
+                            //转发
+                            weiBodata.reposts = response.data.reposts_count;
+                            //评论
+                            weiBodata.comments = response.data.comments_count;
+                            //赞
+                            weiBodata.attitudes = response.data.attitudes_count;
+                            //微博标题
+                            weiBodata.title = response.data.status_title;
+                            //发布的内容
+                            weiBodata.Text = response.data.text;
 
-                        //是否转发
-                        if (response.data.retweeted_status != null) {
-                            weiBodata.isRelay = true;
-                        } else {
-                            weiBodata.isRelay = false;
+                            //是否转发
+                            if (response.data.retweeted_status != null) {
+                                weiBodata.isRelay = true;
+                            } else {
+                                weiBodata.isRelay = false;
+                            }
+                            console.log(weiBodata);
+                            $("#response").val(JSON.stringify(weiBodata));
                         }
-                        console.log(weiBodata);
-                        $("#response").val(JSON.stringify(weiBodata));
-                    }
+                    } else {}
                 }).fail(function (error) {
                     $("#response").val(JSON.stringify(error));
                 });
