@@ -42,6 +42,7 @@
                 var url = $("#url").val();
                 var type = $("#weibo").val();
                 // $("#iframe").attr("src", url);
+                $("#response").val("");
                 $.ajax({
                     url: relayURL,
                     type: "POST",
@@ -53,7 +54,7 @@
                 }).done(function (response) {
                     console.log(response);
                     if (type === "content") {
-                        if (response.ok == 1) {
+                        if (response.ok === 1) {
                             var weiBodata = {};
                             //创建时间
                             weiBodata.created = response.data.created_at;
@@ -83,7 +84,17 @@
                             console.log(weiBodata);
                             $("#response").val(JSON.stringify(weiBodata));
                         }
-                    } else {}
+                    } else {
+                        if (response.ok === 1) {
+                            var owner = {};
+                            owner.id = response.data.userInfo.id;
+                            owner.name = response.data.userInfo.screen_name;
+                            owner.followers_count = response.data.userInfo.followers_count;
+
+                            console.log(owner);
+                            $("#response").val(JSON.stringify(owner));
+                        }
+                    }
                 }).fail(function (error) {
                     $("#response").val(JSON.stringify(error));
                 });
